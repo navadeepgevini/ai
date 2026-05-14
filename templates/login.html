@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepAI - Login</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Link to our dedicated CSS file in static/css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, var(--bubble-bot) 0%, var(--bg-color) 100%);
+        }
+        
+        .modal form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .modal input {
+            margin-bottom: 0;
+        }
+
+        .login-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .google-btn {
+            background: #ffffff;
+            color: #374151;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .google-btn:hover {
+            background: #f9fafb;
+            opacity: 1;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .divider::before { margin-right: .5em; }
+        .divider::after { margin-left: .5em; }
+        
+        .footer-link {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .footer-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="modal">
+            <div class="login-logo">DeepAI</div>
+            <h2>Welcome Back</h2>
+            <p>Log in to your account to continue</p>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <div id="error-msg" style="color: #ef4444; font-size: 0.85rem; display: none; text-align: left; margin-bottom: 0.5rem;"></div>
+                <button type="submit" id="submit-btn">Log In</button>
+            </form>
+
+            <div class="divider">or</div>
+            
+            <button type="button" id="google-btn" class="google-btn">
+                <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
+                Sign in with Google
+            </button>
+            
+            <button type="button" id="phone-btn" class="google-btn">
+                <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                Sign in with Phone
+            </button>
+            
+            <div id="phone-auth-section" style="display: none; margin-top: 1rem;">
+                <div id="recaptcha-container"></div>
+                <div id="phone-input-section" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <input type="text" id="phone-code" value="+91" style="width: 3.5rem; text-align: center; padding: 0.5rem;" disabled>
+                    <input type="tel" id="phone-number" placeholder="Phone Number" style="flex: 1; padding: 0.5rem;">
+                </div>
+                <button type="button" id="send-otp-btn" style="width: 100%; margin-bottom: 0.5rem;">Send OTP</button>
+                
+                <div id="otp-input-section" style="display: none; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <input type="text" id="otp-code" placeholder="Enter OTP" style="flex: 1; padding: 0.5rem;">
+                </div>
+                <button type="button" id="verify-otp-btn" style="display: none; width: 100%;">Verify OTP</button>
+            </div>
+
+            <div class="footer-link">
+                Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        
+        self.FIREBASE_APPCHECK_DEBUG_TOKEN = "AdpetEb8IwSrJK7ryeFp6TGIMXgTWbM4FcouRct0TOb5peFIqeGtlPvsdHUSw72f6u0SXM2ZqueMgSlYwKHIQ2qt57vDPhctKrkEp3VC5hN13Ttw-RkE9WRhyNqqV64NF--icI2pdxqnLxq2fXCgltqGWw";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2bFN_DZPkJy4RhDeG0431pTTnRBfddPI",
+            authDomain: "chatbot-dca8d.firebaseapp.com",
+            projectId: "chatbot-dca8d",
+            storageBucket: "chatbot-dca8d.firebasestorage.app",
+            messagingSenderId: "675662802628",
+            appId: "1:675662802628:web:9ee927194e1c3314662391",
+            measurementId: "G-GRHYK5JKR4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loginForm = document.getElementById('login-form');
+        const errorMsg = document.getElementById('error-msg');
+        const submitBtn = document.getElementById('submit-btn');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = "/";
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            errorMsg.style.display = 'none';
+            submitBtn.textContent = 'Logging in...';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    window.location.href = "/";
+                })
+                .catch((error) => {
+                    submitBtn.textContent = 'Log In';
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    
+                    let message = error.message;
+                    if (error.code === 'auth/invalid-credential') {
+                        message = "Invalid email or password.";
+                    } else if (error.code === 'auth/user-not-found') {
+                        message = "No user found with this email.";
+                    } else if (error.code === 'auth/wrong-password') {
+                        message = "Incorrect password.";
+                    } else if (error.code === 'auth/too-many-requests') {
+                        message = "Too many failed attempts. Please try again later.";
+                    }
+                    errorMsg.textContent = message;
+                    errorMsg.style.display = 'block';
+                });
+        });
+
+        const googleBtn = document.getElementById('google-btn');
+        const provider = new GoogleAuthProvider();
+
+        googleBtn.addEventListener('click', () => {
+            errorMsg.style.display = 'none';
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // onAuthStateChanged will handle the redirect
+                }).catch((error) => {
+                    errorMsg.textContent = error.message;
+                    errorMsg.style.display = 'block';
+                });
+        });
+
+        // Phone Authentication Flow
+        const phoneBtn = document.getElementById('phone-btn');
+        const phoneAuthSection = document.getElementById('phone-auth-section');
+        const phoneInputSection = document.getElementById('phone-input-section');
+        const sendOtpBtn = document.getElementById('send-otp-btn');
+        const otpInputSection = document.getElementById('otp-input-section');
+        const verifyOtpBtn = document.getElementById('verify-otp-btn');
+        const phoneNumberInput = document.getElementById('phone-number');
+        const phoneCodeInput = document.getElementById('phone-code');
+        const otpCodeInput = document.getElementById('otp-code');
+
+        let confirmationResult = null;
+        let recaptchaVerifier = null;
+
+        phoneBtn.addEventListener('click', () => {
+            errorMsg.style.display = 'none';
+            phoneAuthSection.style.display = phoneAuthSection.style.display === 'none' ? 'block' : 'none';
+            if (!recaptchaVerifier) {
+                recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        // reCAPTCHA solved
+                    }
+                });
+            }
+        });
+
+        sendOtpBtn.addEventListener('click', () => {
+            const phoneNumber = phoneCodeInput.value + phoneNumberInput.value;
+            errorMsg.style.display = 'none';
+            sendOtpBtn.textContent = 'Sending...';
+            sendOtpBtn.disabled = true;
+
+            signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier)
+                .then((result) => {
+                    confirmationResult = result;
+                    phoneInputSection.style.display = 'none';
+                    sendOtpBtn.style.display = 'none';
+                    otpInputSection.style.display = 'flex';
+                    verifyOtpBtn.style.display = 'block';
+                }).catch((error) => {
+                    errorMsg.textContent = error.message;
+                    errorMsg.style.display = 'block';
+                    sendOtpBtn.textContent = 'Send OTP';
+                    sendOtpBtn.disabled = false;
+                });
+        });
+
+        verifyOtpBtn.addEventListener('click', () => {
+            const code = otpCodeInput.value;
+            errorMsg.style.display = 'none';
+            verifyOtpBtn.textContent = 'Verifying...';
+            verifyOtpBtn.disabled = true;
+
+            confirmationResult.confirm(code).then((result) => {
+                window.location.href = "/";
+            }).catch((error) => {
+                errorMsg.textContent = error.message;
+                errorMsg.style.display = 'block';
+                verifyOtpBtn.textContent = 'Verify OTP';
+                verifyOtpBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+
+</html>

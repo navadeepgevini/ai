@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepAI</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Link to our dedicated CSS file in static/css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Note: We removed the API Key Overlay entirely since the key is handled in the Flask backend securely via the .env file now -->
+
+    <!-- Main Interface -->
+    <div class="app-container">
+        <header style="position: relative;">
+            <h1>DeepAI</h1>
+            <a href="#" id="logout-btn"
+                style="position: absolute; right: 1.5rem; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: color 0.2s;"
+                onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">Log
+                out</a>
+        </header>
+
+        <div class="chat-window" id="chat-window">
+            <!-- Messages inserted here via JS -->
+            <!-- Welcome message -->
+            <div class="message-wrapper bot">
+                <div class="message-sender">DeepAI</div>
+                <div class="message-bubble">Hello! I am DeepAI, a friendly and helpful assistant. How can I assist you
+                    today?</div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-wrapper" id="typing-container">
+                <div class="message-sender">DeepAI is thinking...</div>
+                <div class="typing-indicator" id="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-bar">
+                <textarea id="msg-input" placeholder="Message DeepAI..." rows="1"></textarea>
+                <button class="send-btn" id="send-btn" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to our dedicated JavaScript file in static/js -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA2bFN_DZPkJy4RhDeG0431pTTnRBfddPI",
+            authDomain: "chatbot-dca8d.firebaseapp.com",
+            projectId: "chatbot-dca8d",
+            storageBucket: "chatbot-dca8d.firebasestorage.app",
+            messagingSenderId: "675662802628",
+            appId: "1:675662802628:web:9ee927194e1c3314662391",
+            measurementId: "G-GRHYK5JKR4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "/login";
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                window.location.href = "/login";
+            }).catch((error) => {
+                console.error("Sign out error", error);
+            });
+        });
+    </script>
+</body>
+
+</html>
