@@ -128,8 +128,15 @@
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+                let errorMsg = `HTTP ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMsg = errorData.error?.message || errorMsg;
+                } catch {
+                    const textData = await response.text();
+                    errorMsg = textData.substring(0, 60) + "...";
+                }
+                throw new Error(errorMsg);
             }
 
             // Create empty placeholder bubble for streaming

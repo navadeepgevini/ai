@@ -35,7 +35,7 @@ def signup():
 @app.route('/api/chat', methods=['POST'])
 def stream_chat():
     """Proxy SSE streaming from the Groq API back to the client UI."""
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     user_message = data.get('message', '').strip()
     history = data.get('history', [])
 
@@ -92,8 +92,7 @@ def stream_chat():
         headers={
             'Cache-Control': 'no-cache, no-transform',
             'X-Accel-Buffering': 'no',
-            'Content-Type': 'text/event-stream; charset=utf-8',
-            'Transfer-Encoding': 'chunked',
+            'Content-Type': 'text/event-stream; charset=utf-8'
         }
     )
 
